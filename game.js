@@ -33,26 +33,36 @@ const rSchema = {
   }
 };
 
-function Game(players, winScore) {
-  this.players = players;
-  this.winScore = winScore;
-  this.currentScores = [];
-  this.rankCard = [];
-  this.currentPlayer = -1;
+function Game(players, winScore, { currentPlayer = -1, currentScores = [], rankCard = [] } = {}) {
+
+  if(parseInt(winScore) < 1){
+    throw new Error('Winning Score should be more than 1');
+  }
+
+  this.players = parseInt(players);
+  this.winScore = parseInt(winScore);
+  this.currentScores = currentScores;
+  this.rankCard = rankCard;
+  this.currentPlayer = currentPlayer;
 }
 
 Game.prototype.initialize = function(){
-  if(this.players < 1 || this.players > 9){
-    throw new Error('Players count less than 0 or more than 10');
+  if(this.players < 2 || this.players > 9){
+    throw new Error('Players count less than 2 or more than 10');
   }
-  const scoresArray = new Array(this.players);
-  scoresArray.fill(null);
-  this.currentScores = scoresArray.map(() =>  []);
-  this.currentScores[0] = [10] 
 
-  const rankCardArray = new Array(this.players);
-  rankCardArray.fill(-1);
-  this.rankCard = rankCardArray;
+  if(this.currentScores.length < 1){
+    const scoresArray = new Array(this.players);
+    scoresArray.fill(null);
+    console.log(scoresArray);
+    this.currentScores = scoresArray.map(() =>  []);
+  }
+
+  if(this.rankCard.length < 1){
+    const rankCardArray = new Array(this.players);
+    rankCardArray.fill(-1);
+    this.rankCard = rankCardArray;
+  }
 }
 
 Game.prototype.getNextPlayer = function(){
@@ -116,24 +126,24 @@ Game.prototype.increaseScore = function (playerIndex, increaseBy) {
   this.currentScores[playerIndex].push(increaseBy);
 
   const sumOfPlayer = this.currentScores[playerIndex].reduce((acc, score) => acc + score, 0);
-  if(sumOfPlayer > this.winScore){
+  if(sumOfPlayer >= this.winScore){
     const latestRank = Math.max(...this.rankCard);
     this.rankCard[playerIndex] = latestRank === -1 ? 1 : latestRank + 1;
 
-    console.log('Hurray ! Your rank is: ', this.rankCard[playerIndex]);
+    console.log('\n Hurray ! Your rank is: ', chalk.bold.yellowBright(this.rankCard[playerIndex]), '🎉🎉\n' );
   }
 
   return sumOfPlayer;
 }
 
-Game.prototype.rollDice = function(){
+Game.prototype.rollDice = function(clearConsole = 1){
   return new Promise((resolve) =>{
     let i = 5;
     const interval = setInterval(() => {
-      console.clear();
+      if(clearConsole) { console.clear(); }
       i--;
       const random = getRandomInt(1,6);
-      console.log(diceImage[random].image);
+      if(clearConsole) { console.log(diceImage[random].image) };
       if(i===0){
         clearInterval(interval);
         resolve(random);
@@ -172,7 +182,7 @@ Game.prototype.start = async function(){
     }
 
     const newScore = this.increaseScore(nextPlayer, value);
-    console.log(`Increasing Player ${nextPlayer + 1} score by ${value}. New Score ${newScore}`);
+    console.log(`Increasing Player ${nextPlayer + 1} score by ${value}`, chalk.bold.yellowBright(`\n\nNew Score: ${newScore}`));
     await stopScreen(5000);
   }
 
