@@ -12,13 +12,13 @@ The Game of Dice | Node JS | CLI GAME
 
 - Please 'r' or 'R' to roll the rice and the game will add value to the scores.
 
-![Rolling Dice Sreen](https://github.com/vineetvk01/AQI/blob/main/roll-dice.gif?raw=true)
+![Rolling Dice Sreen](https://github.com/vineetvk01/dice-game/blob/main/roll-dice.gif?raw=true)
 
 ### Winner Rank screen :
 
 - The game ends when only one players is remaining at the end of the game and shows the ranks screen.
 
-![Rank Screen](https://github.com/vineetvk01/AQI/blob/main/end-game.gif?raw=true)
+![Rank Screen](https://github.com/vineetvk01/dice-game/blob/main/end-game.gif?raw=true)
 
 # SETUP
 
